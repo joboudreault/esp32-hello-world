@@ -1,0 +1,31 @@
+[package]
+name        = "esp32_hello_world"
+description = "An ESP32 Hello World"
+version     = "0.1.0"
+authors     = ["Jacob Ouellet-Boudreault <joboudreault@dimonoff.com>"]
+edition     = "2021"
+
+
+[features]
+default      = ["esp32s3", "log-espflash"]
+esp32s3      = ["esp-hal/esp32s3", "esp-backtrace/esp32s3", "esp-println/esp32s3"]
+log          = ["defmt", "esp-hal/defmt", "embassy-executor/defmt", "esp-backtrace/defmt"]
+log-espflash = ["log", "dep:esp-backtrace", "dep:esp-println"]
+
+
+
+[dependencies]
+esp-hal          = { version = "0.17.0", features = ["embassy", "embassy-time-timg0", "embassy-executor-thread"] }
+embassy-executor = { version = "0.5", features = ["executor-thread", "integrated-timers"] }
+embassy-time     = { version = "0.3" }
+
+# Logging
+esp-backtrace    = { version = "0.11.0", features = ["exception-handler", "panic-handler", "println"], optional = true }
+esp-println      = { version = "0.9.0", features = ["log", "defmt-espflash"], optional = true }
+defmt            = { version = "0.3", optional = true }
+
+
+
+[patch.crates-io]
+embedded-hal = { git = "https://github.com/joboudreault/embedded-hal.git", branch = "610/fix-defmt-03-build" }
+embedded-io = { git = "https://github.com/joboudreault/embedded-hal.git", branch = "610/fix-defmt-03-build" }

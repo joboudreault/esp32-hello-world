@@ -1,0 +1,34 @@
+[build]
+target = "xtensa-esp32s3-none-elf"
+
+[target.xtensa-esp32s3-none-elf]
+runner = "espflash flash --monitor -L defmt"
+
+rustflags = [
+    "-C", "link-arg=-nostartfiles", # no main()
+    "-C", "link-arg=-Tlinkall.x", # linking requirement
+    "-C", "link-arg=-Tdefmt.x", # defmt crate
+]
+
+[env]
+ESP_LOGLEVEL="INFO"
+DEFMT_LOG = "info"
+
+[unstable]
+build-std = ["core"]
+build-std-features = ["panic_immediate_abort"]
+
+[profile.dev]
+# Rust debug is too slow. 
+# For debug builds always builds with some optimization
+opt-level = "s"
+debug     = "full"
+
+[profile.release]
+codegen-units    = 1
+debug            = "full"
+debug-assertions = false
+incremental      = false
+lto              = 'fat'
+opt-level        = 's'
+overflow-checks  = false
